@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תפריט שבועי | שובע מקסימלי 4.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #2D6A4F;
+    --primary-light: #52B788;
+    --primary-pale: #D8F3DC;
+    --accent: #F77F00;
+    --accent-light: #FCBF49;
+    --bg: #F8FAF8;
+    --card: #FFFFFF;
+    --text: #1B2E1F;
+    --text-soft: #4A6A52;
+    --border: #B7E4C7;
+    --checked: #52B788;
+    --shadow: 0 4px 24px rgba(45,106,79,0.10);
+    --radius: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Heebo', 'Rubik', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, #1B4332 60%, #081C15 100%);
+    color: white;
+    padding: 36px 24px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(82,183,136,0.18);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(247,127,0,0.13);
+  }
+  .header h1 {
+    font-size: 2.1rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    position: relative;
+    z-index: 1;
+  }
+  .header p {
+    font-size: 1rem;
+    color: var(--primary-pale);
+    margin-top: 6px;
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
+  }
+  .leaf-icon { font-size: 2rem; margin-bottom: 6px; display: block; }
+
+  /* Tabs */
+  .tabs-wrapper {
+    background: white;
+    box-shadow: 0 2px 12px rgba(45,106,79,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tabs {
+    display: flex;
+    overflow-x: auto;
+    padding: 0 8px;
+    gap: 2px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 14px 18px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-soft);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    font-family: 'Heebo', sans-serif;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--primary); }
+  .tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+  .tab.goals-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab.settings-tab.active {
+    color: #5B6EBF;
+    border-bottom-color: #5B6EBF;
+  }
+
+  /* Content */
+  .content { max-width: 780px; margin: 0 auto; padding: 24px 16px 48px; }
+
+  /* Day Panel */
+  .panel { display: none; animation: fadeIn 0.3s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .day-header {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    color: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .day-header h2 { font-size: 1.6rem; font-weight: 900; }
+  .day-header .day-icon { font-size: 2.4rem; }
+  .day-subtitle { font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-top: 2px; }
+
+  /* Meal Card */
+  .meal-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 0;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .meal-card:hover { box-shadow: 0 8px 32px rgba(45,106,79,0.15); }
+
+  .meal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px 12px;
+    background: var(--primary-pale);
+    border-bottom: 1px solid var(--border);
+  }
+  .meal-time {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    white-space: nowrap;
+  }
+  .meal-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .meal-icon { font-size: 1.4rem; }
+
+  .meal-items { padding: 14px 18px 10px; }
+
+  .meal-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px dashed #e8f5e9;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .meal-item:last-child { border-bottom: none; }
+
+  .meal-item input[type="checkbox"] { display: none; }
+
+  .checkmark {
+    width: 22px; height: 22px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  .meal-item.done .checkmark {
+    background: var(--checked);
+    border-color: var(--checked);
+  }
+  .meal-item.done .checkmark::after {
+    content: '✓';
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .item-text {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.5;
+    font-weight: 400;
+    flex: 1;
+  }
+  .meal-item.done .item-text {
+    text-decoration: line-through;
+    color: #aaa;
+  }
+
+  /* Tip Card */
+  .tip-card {
+    background: linear-gradient(135deg, #FFF8E7, #FFF3CC);
+    border: 2px solid var(--accent-light);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 8px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .tip-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .tip-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
+  .tip-text { font-size: 0.88rem; color: #7A5C00; line-height: 1.55; }
+
+  /* Progress bar */
+  .progress-section {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .progress-bar-bg {
+    height: 10px;
+    background: var(--primary-pale);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-light), var(--primary));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    min-width: 4%;
+  }
+  .progress-count { font-size: 0.8rem; color: var(--primary); font-weight: 700; text-align: center; margin-top: 6px; }
+
+  /* ===== GOALS PANEL ===== */
+  .goals-title {
+    background: linear-gradient(135deg, var(--accent), #C75000);
+    color: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .goals-title h2 { font-size: 1.5rem; font-weight: 900; }
+  .goals-title .g-icon { font-size: 2.2rem; }
+
+  .goal-input-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid #FFD580;
+  }
+  .goal-input-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .input-group { flex: 1; min-width: 130px; }
+  .input-group label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-soft);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .input-group input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'Heebo', sans-serif;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--bg);
+  }
+  .input-group input:focus { border-color: var(--primary-light); }
+  .btn-add {
+    width: 100%;
+    padding: 11px;
+    background: linear-gradient(135deg, var(--accent-light), var(--accent));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-add:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-add:active { transform: translateY(0); }
+
+  .target-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+  }
+  .target-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .target-input-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .target-input-group label { font-size: 0.82rem; color: var(--text-soft); font-weight: 600; }
+  .target-input-group input {
+    width: 90px;
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: 'Heebo', sans-serif;
+    outline: none;
+    background: var(--bg);
+  }
+  .target-input-group input:focus { border-color: var(--accent-light); }
+  .btn-set-target {
+    padding: 7px 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+  }
+
+  /* Chart */
+  .chart-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+  }
+  .chart-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+  .chart-wrap { position: relative; height: 220px; }
+  canvas { width: 100% !important; }
+
+  /* Entries Table */
+  .entries-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 8px;
+  }
+  .entries-table th {
+    text-align: right;
+    padding: 8px 10px;
+    background: var(--primary-pale);
+    color: var(--primary);
+    font-weight: 700;
+    border-bottom: 2px solid var(--border);
+  }
+  .entries-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+    color: var(--text);
+  }
+  .entries-table tr:hover td { background: var(--primary-pale); }
+  .btn-del {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #e05252;
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    border-radius: 5px;
+  }
+  .btn-del:hover { background: #fee2e2; }
+
+  /* Encouragement */
+  .encourage-card {
+    background: linear-gradient(135deg, var(--primary-pale), #B7E4C7);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    border: 1.5px solid var(--border);
+    text-align: center;
+  }
+  .encourage-card .e-icon { font-size: 2.2rem; margin-bottom: 6px; }
+  .encourage-text { font-size: 1rem; font-weight: 600; color: var(--primary); line-height: 1.55; }
+
+  /* Summary stat */
+  .stats-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat-box {
+    flex: 1; min-width: 100px;
+    background: white;
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+  }
+  .stat-val { font-size: 1.5rem; font-weight: 900; color: var(--primary); }
+  .stat-lbl { font-size: 0.72rem; color: var(--text-soft); font-weight: 600; margin-top: 2px; }
+  .stat-box.orange .stat-val { color: var(--accent); }
+
+  /* No entries */
+  .no-entries { text-align: center; color: #aaa; font-size: 0.88rem; padding: 20px 0; }
+
+  /* Script needed tag */
+  #Chart-js-needed { display: none; }
+
+  /* Settings */
+  .settings-header {
+    background: linear-gradient(135deg, #5B6EBF, #3A4A9F);
+    color: white;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .settings-header h2 { font-size: 1.5rem; font-weight: 900; }
+  .settings-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+  }
+  .settings-card h3 { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .username-row { display: flex; gap: 10px; align-items: center; }
+  .username-row input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Heebo', sans-serif;
+    color: var(--text);
+    outline: none;
+    background: var(--bg);
+    transition: border-color 0.2s;
+  }
+  .username-row input:focus { border-color: #5B6EBF; }
+  .btn-save-name {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #7080CF, #5B6EBF);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .btn-save-name:hover { opacity: 0.88; }
+  .btn-reset-all {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #e05252, #b03030);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+    transition: opacity 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-reset-all:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-reset-all:active { transform: translateY(0); }
+  .reset-confirm {
+    display: none;
+    margin-top: 12px;
+    background: #fff5f5;
+    border: 1.5px solid #fca5a5;
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .reset-confirm p { font-size: 0.9rem; color: #b03030; font-weight: 600; margin-bottom: 12px; }
+  .reset-confirm-btns { display: flex; gap: 10px; justify-content: center; }
+  .btn-confirm-yes {
+    padding: 8px 22px;
+    background: #e05252;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+  }
+  .btn-confirm-no {
+    padding: 8px 22px;
+    background: #eee;
+    color: var(--text);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Heebo', sans-serif;
+  }
+  .success-toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--primary);
+    color: white;
+    padding: 12px 26px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: 'Heebo', sans-serif;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    z-index: 9999;
+    white-space: nowrap;
+  }
+  .success-toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 600px) {
+    /* Header */
+    .header { padding: 24px 16px 20px; }
+    .header h1 { font-size: 1.35rem; }
+    .header p { font-size: 0.88rem; }
+    .leaf-icon { font-size: 1.6rem; margin-bottom: 4px; }
+
+    /* Tabs — bigger tap targets */
+    .tab { padding: 13px 11px; font-size: 0.78rem; letter-spacing: -0.2px; }
+
+    /* Content */
+    .content { padding: 14px 10px 90px; }
+
+    /* Day headers */
+    .day-header { padding: 14px 16px; margin-bottom: 14px; border-radius: 14px; }
+    .day-header h2 { font-size: 1.2rem; }
+    .day-header .day-icon { font-size: 1.8rem; }
+    .day-subtitle { font-size: 0.78rem; }
+
+    /* Meal cards */
+    .meal-card { border-radius: 14px; margin-bottom: 10px; }
+    .meal-header { padding: 11px 14px 10px; gap: 8px; flex-wrap: wrap; }
+    .meal-time { font-size: 0.72rem; padding: 3px 8px; }
+    .meal-name { font-size: 0.88rem; }
+    .meal-icon { font-size: 1.2rem; }
+    .meal-items { padding: 10px 14px 8px; }
+
+    /* Meal items — larger touch area */
+    .meal-item { padding: 10px 0; gap: 12px; }
+    .checkmark { width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0; }
+    .meal-item.done .checkmark::after { font-size: 1rem; }
+    .item-text { font-size: 0.9rem; line-height: 1.45; }
+
+    /* Tip card */
+    .tip-card { padding: 13px 14px; border-radius: 14px; gap: 10px; }
+    .tip-icon { font-size: 1.3rem; }
+    .tip-text { font-size: 0.84rem; }
+
+    /* Progress */
+    .progress-section { padding: 13px 14px; border-radius: 14px; margin-bottom: 14px; }
+    .progress-label { font-size: 0.78rem; }
+    .progress-bar-bg { height: 9px; }
+
+    /* Goals */
+    .goals-title { padding: 14px 16px; border-radius: 14px; }
+    .goals-title h2 { font-size: 1.2rem; }
+    .goals-title .g-icon { font-size: 1.8rem; }
+
+    .goal-input-card { padding: 15px 14px; border-radius: 14px; margin-bottom: 14px; }
+    .goal-input-card h3 { font-size: 0.92rem; margin-bottom: 12px; }
+
+    /* Input fields — bigger for fingers */
+    .input-row { flex-direction: column; gap: 8px; }
+    .input-group { min-width: unset; }
+    .input-group input { padding: 12px 14px; font-size: 1rem; border-radius: 12px; }
+    .input-group label { font-size: 0.8rem; }
+
+    .btn-add { padding: 14px; font-size: 1rem; border-radius: 12px; }
+
+    .target-input-group { gap: 8px; flex-wrap: wrap; }
+    .target-input-group input { width: 100px; padding: 10px 12px; font-size: 1rem; }
+    .btn-set-target { padding: 10px 16px; font-size: 0.88rem; border-radius: 10px; flex: 1; }
+
+    /* Stats */
+    .stats-row { gap: 8px; margin-bottom: 12px; }
+    .stat-box { padding: 12px 8px; border-radius: 12px; min-width: 80px; }
+    .stat-val { font-size: 1.3rem; }
+    .stat-lbl { font-size: 0.65rem; }
+
+    /* Chart */
+    .chart-card { padding: 14px 12px; border-radius: 14px; }
+    .chart-card h3 { font-size: 0.92rem; margin-bottom: 12px; }
+    .chart-wrap { height: 190px; }
+
+    /* Table */
+    .entries-table { font-size: 0.8rem; }
+    .entries-table th, .entries-table td { padding: 9px 8px; }
+    .btn-del { font-size: 1rem; padding: 4px 8px; }
+
+    /* Encourage */
+    .encourage-card { padding: 14px 16px; border-radius: 14px; }
+    .encourage-card .e-icon { font-size: 1.8rem; }
+    .encourage-text { font-size: 0.9rem; }
+
+    /* Settings */
+    .settings-header { padding: 14px 16px; border-radius: 14px; }
+    .settings-header h2 { font-size: 1.2rem; }
+    .settings-card { padding: 16px 14px; border-radius: 14px; }
+    .settings-card h3 { font-size: 0.92rem; }
+    .username-row { flex-direction: column; gap: 8px; }
+    .username-row input { font-size: 1rem; padding: 12px 14px; border-radius: 12px; }
+    .btn-save-name { width: 100%; padding: 12px; font-size: 0.95rem; border-radius: 12px; text-align: center; }
+    .btn-reset-all { padding: 14px; font-size: 0.95rem; border-radius: 12px; }
+    .reset-confirm { border-radius: 12px; }
+    .reset-confirm p { font-size: 0.85rem; }
+    .btn-confirm-yes, .btn-confirm-no { padding: 11px 20px; font-size: 0.9rem; }
+
+    /* Toast */
+    .success-toast { font-size: 0.88rem; padding: 11px 20px; bottom: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="leaf-icon">🌿</span>
+  <h1>תפריט שובע מקסימלי 4.0</h1>
+  <p id="header-subtitle">תוכנית הרבלייף | מעקב יומי חכם</p>
+</div>
+
+<div class="tabs-wrapper">
+  <div class="tabs" id="tabs">
+    <button class="tab active" onclick="showTab('ראשון',this)">ראשון</button>
+    <button class="tab" onclick="showTab('שני',this)">שני</button>
+    <button class="tab" onclick="showTab('שלישי',this)">שלישי</button>
+    <button class="tab" onclick="showTab('רביעי',this)">רביעי</button>
+    <button class="tab" onclick="showTab('חמישי',this)">חמישי</button>
+    <button class="tab" onclick="showTab('שישי',this)">שישי</button>
+    <button class="tab" onclick="showTab('שבת',this)">שבת</button>
+    <button class="tab goals-tab" onclick="showTab('goals',this)">🎯 יעדים</button>
+    <button class="tab settings-tab" onclick="showTab('settings',this)">⚙️ הגדרות</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ===== SUNDAY ===== -->
+  <div class="panel active" id="panel-ראשון">
+    <div class="day-header">
+      <div>
+        <h2>☀️ יום ראשון</h2>
+        <div class="day-subtitle">התחלה טובה לשבוע</div>
+      </div>
+      <div class="day-icon">🥗</div>
+    </div>
+    <div class="progress-section" id="prog-ראשון">
+      <div class="progress-label"><span>התקדמות יומית</span><span id="prog-txt-ראשון">0 מתוך 0</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar-ראשון" style="width:0%"></div></div>
+    </div>
+    <div id="meals-ראשון">
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌅</span><span class="meal-time">07:00–08:30</span><span class="meal-name">ארוחת בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1) + חלב/חלב שקדים</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף בוקר</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">☕</span><span class="meal-time">10:00–10:30</span><span class="meal-name">ארוחת ביניים בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">גביע קוטג' 5%</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים (מלפפון, פלפל, גזר)</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🥘</span><span class="meal-time">13:00–14:30</span><span class="meal-name">ארוחת צהריים</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">חזה עוף</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">6 כפות קינואה מבושלת</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">סלט ירקות ענק</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">כף טחינה גולמית</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🍎</span><span class="meal-time">16:00–17:00</span><span class="meal-name">ארוחת ביניים אחה"צ</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">פרי עונתי</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">7 שקדים לא קלויים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌙</span><span class="meal-time">19:00–20:00</span><span class="meal-name">ארוחת ערב</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1) + חלב/חלב שקדים</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף ערב</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div><div class="tip-title">טיפ לשדרוג יום ראשון</div><div class="tip-text">הוסף לסלט קינואה כף זרעי צ'יה לסיבים תזונתיים מעולים ותחושת שובע ממושכת לאורך כל אחר הצהריים.</div></div>
+    </div>
+  </div>
+
+  <!-- ===== MONDAY ===== -->
+  <div class="panel" id="panel-שני">
+    <div class="day-header">
+      <div>
+        <h2>💪 יום שני</h2>
+        <div class="day-subtitle">אנרגיה לכל השבוע</div>
+      </div>
+      <div class="day-icon">🐟</div>
+    </div>
+    <div class="progress-section" id="prog-שני">
+      <div class="progress-label"><span>התקדמות יומית</span><span id="prog-txt-שני">0 מתוך 0</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar-שני" style="width:0%"></div></div>
+    </div>
+    <div id="meals-שני">
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌅</span><span class="meal-time">07:00–08:30</span><span class="meal-name">ארוחת בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף בוקר</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">☕</span><span class="meal-time">10:00–10:30</span><span class="meal-name">ארוחת ביניים בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">חביתה מ-2 ביצים</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🥘</span><span class="meal-time">13:00–14:30</span><span class="meal-name">ארוחת צהריים</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">פילה סלמון (אפוי / בגריל)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">6 כפות עדשים מבושלות</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שעועית ירוקה מאודה</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">רבע אבוקדו</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🍎</span><span class="meal-time">16:00–17:00</span><span class="meal-name">ארוחת ביניים אחה"צ</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">פרוסת גבינה צפתית 5%</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌙</span><span class="meal-time">19:00–20:00</span><span class="meal-name">ארוחת ערב</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף ערב</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div><div class="tip-title">טיפ לשדרוג יום שני</div><div class="tip-text">הוסף לסלמון לימון טרי + פפריקה מעושנת לפני האפייה — תוסיף טעם עמוק בלי קלוריות. עדשים + אבוקדו = צמד מושלם לסיבים ושומן טוב.</div></div>
+    </div>
+  </div>
+
+  <!-- ===== TUESDAY ===== -->
+  <div class="panel" id="panel-שלישי">
+    <div class="day-header">
+      <div>
+        <h2>🌿 יום שלישי</h2>
+        <div class="day-subtitle">במחצית הדרך!</div>
+      </div>
+      <div class="day-icon">🥦</div>
+    </div>
+    <div class="progress-section" id="prog-שלישי">
+      <div class="progress-label"><span>התקדמות יומית</span><span id="prog-txt-שלישי">0 מתוך 0</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar-שלישי" style="width:0%"></div></div>
+    </div>
+    <div id="meals-שלישי">
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌅</span><span class="meal-time">07:00–08:30</span><span class="meal-name">ארוחת בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף בוקר</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">☕</span><span class="meal-time">10:00–10:30</span><span class="meal-name">ארוחת ביניים בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">גביע גבינה לבנה 5%</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🥘</span><span class="meal-time">13:00–14:30</span><span class="meal-name">ארוחת צהריים</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">פרגית (צלוי / בתנור)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">6 כפות אפונה מבושלת</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">סלט כרוב קצוץ</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">כף שמן זית</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🍎</span><span class="meal-time">16:00–17:00</span><span class="meal-name">ארוחת ביניים אחה"צ</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">פרי עונתי</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">3 אגוזי מלך</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌙</span><span class="meal-time">19:00–20:00</span><span class="meal-name">ארוחת ערב</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף ערב</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div><div class="tip-title">טיפ לשדרוג יום שלישי</div><div class="tip-text">הוסף לסלט הכרוב מעט חומץ תפוחים + כמון — זה מסייע לעיכול, מפחית נפיחות ומשפר ספיגת ברזל מהאפונה.</div></div>
+    </div>
+  </div>
+
+  <!-- ===== WEDNESDAY ===== -->
+  <div class="panel" id="panel-רביעי">
+    <div class="day-header">
+      <div>
+        <h2>🔥 יום רביעי</h2>
+        <div class="day-subtitle">שיא האנרגיה!</div>
+      </div>
+      <div class="day-icon">🍗</div>
+    </div>
+    <div class="progress-section" id="prog-רביעי">
+      <div class="progress-label"><span>התקדמות יומית</span><span id="prog-txt-רביעי">0 מתוך 0</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar-רביעי" style="width:0%"></div></div>
+    </div>
+    <div id="meals-רביעי">
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌅</span><span class="meal-time">07:00–08:30</span><span class="meal-name">ארוחת בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף בוקר</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">☕</span><span class="meal-time">10:00–10:30</span><span class="meal-name">ארוחת ביניים בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">חביתה מ-2 ביצים</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🥘</span><span class="meal-time">13:00–14:30</span><span class="meal-name">ארוחת צהריים</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">כרעי עוף אפויים בתנור</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">חצי בטטה אפויה בתנור</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">סלט עלי בייבי</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">7 זיתים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">💚</span><span class="meal-time">16:00–17:00</span><span class="meal-name">ארוחת ביניים אחה"צ</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">חטיף חלבון הרבלייף</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌙</span><span class="meal-time">19:00–20:00</span><span class="meal-name">ארוחת ערב</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף ערב</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div><div class="tip-title">טיפ לשדרוג יום רביעי</div><div class="tip-text">תבל את הבטטה עם קינמון + פפריקה לפני הצלייה — ייצב את רמות הסוכר בדם ויוסיף טעם מדהים. הקינמון ידוע כמאזן גלוקוז מעולה!</div></div>
+    </div>
+  </div>
+
+  <!-- ===== THURSDAY ===== -->
+  <div class="panel" id="panel-חמישי">
+    <div class="day-header">
+      <div>
+        <h2>🌊 יום חמישי</h2>
+        <div class="day-subtitle">כמעט סיימנו שבוע מלא!</div>
+      </div>
+      <div class="day-icon">🐠</div>
+    </div>
+    <div class="progress-section" id="prog-חמישי">
+      <div class="progress-label"><span>התקדמות יומית</span><span id="prog-txt-חמישי">0 מתוך 0</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar-חמישי" style="width:0%"></div></div>
+    </div>
+    <div id="meals-חמישי">
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌅</span><span class="meal-time">07:00–08:30</span><span class="meal-name">ארוחת בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף בוקר</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">☕</span><span class="meal-time">10:00–10:30</span><span class="meal-name">ארוחת ביניים בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">פרוסת גבינה בולגרית 5%</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🥘</span><span class="meal-time">13:00–17:00</span><span class="meal-name">ארוחת צהריים</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">דג אמנון (בגריל / בתנור)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">6 כפות בורגול מבושל</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות אנטיפסטי</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">כף שמן זית</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🍎</span><span class="meal-time">16:00–17:00</span><span class="meal-name">ארוחת ביניים אחה"צ</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">פרי עונתי</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">3 פקאנים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌙</span><span class="meal-time">19:00–20:00</span><span class="meal-name">ארוחת ערב</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף ערב</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div><div class="tip-title">טיפ לשדרוג יום חמישי</div><div class="tip-text">הוסף עשבי תיבול טריים (פטרוזיליה, כוסברה) לבורגול — יוסיפו ויטמין C שמכפיל ספיגת הברזל מהדגן ומעניקים טריות שלא תעזוב אותך!</div></div>
+    </div>
+  </div>
+
+  <!-- ===== FRIDAY ===== -->
+  <div class="panel" id="panel-שישי">
+    <div class="day-header">
+      <div>
+        <h2>✨ יום שישי</h2>
+        <div class="day-subtitle">לקראת שבת — מגיע לך!</div>
+      </div>
+      <div class="day-icon">🥩</div>
+    </div>
+    <div class="progress-section" id="prog-שישי">
+      <div class="progress-label"><span>התקדמות יומית</span><span id="prog-txt-שישי">0 מתוך 0</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar-שישי" style="width:0%"></div></div>
+    </div>
+    <div id="meals-שישי">
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌅</span><span class="meal-time">07:00–08:30</span><span class="meal-name">ארוחת בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף בוקר</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">☕</span><span class="meal-time">10:00–10:30</span><span class="meal-name">ארוחת ביניים בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">גביע קוטג' 5%</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🥘</span><span class="meal-time">13:00–17:00</span><span class="meal-name">ארוחת צהריים</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">⭐ סטייק בקר (פעם בשבוע!)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות אנטיפסטי</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">סלט חסה ענק</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🍎</span><span class="meal-time">16:00–17:00</span><span class="meal-name">ארוחת ביניים אחה"צ</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">פרי עונתי</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">7 שקדים לא קלויים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌙</span><span class="meal-time">19:00–20:00</span><span class="meal-name">ארוחת ערב</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף ערב</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div><div class="tip-title">טיפ לשדרוג יום שישי</div><div class="tip-text">לפני הסטייק — תבל עם שום טחון + רוזמרין + מיץ לימון 30 דקות. ירידה בגלוקוז ועלייה בטעם. בנוסף, אכול לאט — כ-20 דקות לארוחה למיצוי השובע!</div></div>
+    </div>
+  </div>
+
+  <!-- ===== SATURDAY ===== -->
+  <div class="panel" id="panel-שבת">
+    <div class="day-header">
+      <div>
+        <h2>🕍 שבת</h2>
+        <div class="day-subtitle">שבת שלום — נוח ושמור על המסלול</div>
+      </div>
+      <div class="day-icon">🥙</div>
+    </div>
+    <div class="progress-section" id="prog-שבת">
+      <div class="progress-label"><span>התקדמות יומית</span><span id="prog-txt-שבת">0 מתוך 0</span></div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-bar-שבת" style="width:0%"></div></div>
+    </div>
+    <div id="meals-שבת">
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌅</span><span class="meal-time">08:00–09:30</span><span class="meal-name">ארוחת בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף בוקר</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">☕</span><span class="meal-time">11:00–11:30</span><span class="meal-name">ארוחת ביניים בוקר</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">חביתה מ-2 ביצים</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🥘</span><span class="meal-time">14:00–15:30</span><span class="meal-name">ארוחת צהריים</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שווארמה ביתית (עוף / הודו)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">6 כפות אורז מלא מבושל</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">סלט ירקות טרי</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">כף טחינה גולמית</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🍎</span><span class="meal-time">16:30–17:30</span><span class="meal-name">ארוחת ביניים אחה"צ</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">גביע גבינה לבנה 5%</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">ירקות חתוכים</div></div>
+        </div>
+      </div>
+      <div class="meal-card">
+        <div class="meal-header"><span class="meal-icon">🌙</span><span class="meal-time">20:00–21:00</span><span class="meal-name">ארוחת ערב</span></div>
+        <div class="meal-items">
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">שייק הרבלייף (פורמולה 1)</div></div>
+          <div class="meal-item" onclick="toggleItem(this)"><input type="checkbox"><div class="checkmark"></div><div class="item-text">💊 תוספי הרבלייף ערב</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <div><div class="tip-title">טיפ לשדרוג שבת</div><div class="tip-text">הכן שווארמה ביתית עם תערובת תבלינים: כמון, כורכום, ג'ינג'ר, קינמון ושום — מחמם את חילוף החומרים ומעניק טעם מסעדה בבית!</div></div>
+    </div>
+  </div>
+
+  <!-- ===== GOALS PANEL ===== -->
+  <div class="panel" id="panel-goals">
+    <div class="goals-title">
+      <div>
+        <h2>🎯 יעדי הורדת משקל</h2>
+        <div class="day-subtitle" style="color:rgba(255,255,255,0.85)">עקוב אחרי ההתקדמות שלך</div>
+      </div>
+      <div class="g-icon">📊</div>
+    </div>
+
+    <div class="stats-row" id="stats-row">
+      <div class="stat-box"><div class="stat-val" id="stat-current">—</div><div class="stat-lbl">משקל נוכחי (ק"ג)</div></div>
+      <div class="stat-box orange"><div class="stat-val" id="stat-target">—</div><div class="stat-lbl">משקל יעד (ק"ג)</div></div>
+      <div class="stat-box"><div class="stat-val" id="stat-left">—</div><div class="stat-lbl">נשאר להוריד (ק"ג)</div></div>
+    </div>
+
+    <div class="encourage-card" id="encourage-card" style="display:none">
+      <div class="e-icon" id="e-icon">🌟</div>
+      <div class="encourage-text" id="encourage-text">כל הכבוד!</div>
+    </div>
+
+    <div class="goal-input-card">
+      <h3>🎯 הגדרת יעד משקל</h3>
+      <div class="target-input-group" style="margin-bottom:14px">
+        <label>משקל יעד (ק"ג):</label>
+        <input type="number" id="target-weight" placeholder="לדוגמה: 70" step="0.1" min="30" max="250">
+        <button class="btn-set-target" onclick="setTarget()">קבע יעד</button>
+      </div>
+    </div>
+
+    <div class="goal-input-card">
+      <h3>⚖️ הוסף שקילה יומית</h3>
+      <div class="input-row">
+        <div class="input-group">
+          <label>תאריך</label>
+          <input type="date" id="weigh-date">
+        </div>
+        <div class="input-group">
+          <label>משקל (ק"ג)</label>
+          <input type="number" id="weigh-val" placeholder="לדוגמה: 85.2" step="0.1" min="30" max="250">
+        </div>
+      </div>
+      <button class="btn-add" onclick="addWeigh()">➕ הוסף שקילה</button>
+    </div>
+
+    <div class="chart-card">
+      <h3>📈 גרף התקדמות המשקל</h3>
+      <div class="chart-wrap">
+        <canvas id="weightChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>📋 יומן שקילות</h3>
+      <div id="entries-container">
+        <div class="no-entries">עדיין אין שקילות מוזנות. הוסף את הראשונה! 🌱</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SETTINGS PANEL ===== -->
+  <div class="panel" id="panel-settings">
+    <div class="settings-header">
+      <div>
+        <h2>⚙️ הגדרות</h2>
+        <div class="day-subtitle" style="color:rgba(255,255,255,0.85)">התאמה אישית של המערכת</div>
+      </div>
+      <div style="font-size:2.2rem">🛠️</div>
+    </div>
+
+    <div class="settings-card">
+      <h3>👤 שם המשתמש</h3>
+      <div class="username-row">
+        <input type="text" id="username-input" placeholder="הכנס את שמך כאן..." maxlength="30">
+        <button class="btn-save-name" onclick="saveName()">שמור שם</button>
+      </div>
+      <p style="font-size:0.78rem;color:var(--text-soft);margin-top:8px">השם יופיע בכותרת הראשית של המערכת עם תוספת "אלופה" 👑</p>
+    </div>
+
+    <div class="settings-card">
+      <h3>🔄 איפוס סימוני תפריט</h3>
+      <p style="font-size:0.88rem;color:var(--text-soft);margin-bottom:14px;line-height:1.55">לחיצה תאפס את כל סימוני ה"בוצע" בכל ימות השבוע בבת אחת — שימושי בתחילת שבוע חדש.</p>
+      <button class="btn-reset-all" onclick="showResetConfirm()">🗑️ אפס את כל הסימונים</button>
+      <div class="reset-confirm" id="reset-confirm">
+        <p>האם אתה בטוח? כל הסימונים של כל הימים יימחקו.</p>
+        <div class="reset-confirm-btns">
+          <button class="btn-confirm-yes" onclick="doReset()">כן, אפס הכל</button>
+          <button class="btn-confirm-no" onclick="hideResetConfirm()">ביטול</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<div class="success-toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ========== TABS ==========
+function showTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ========== USERNAME ==========
+let userName = localStorage.getItem('userName') || '';
+
+function applyName() {
+  const sub = document.getElementById('header-subtitle');
+  if (userName) {
+    sub.textContent = userName + ' אלופה 👑';
+  } else {
+    sub.textContent = 'תוכנית הרבלייף | מעקב יומי חכם';
+  }
+  const inp = document.getElementById('username-input');
+  if (inp) inp.value = userName;
+}
+
+function saveName() {
+  const val = document.getElementById('username-input').value.trim();
+  if (!val) { showToast('הכנס שם תחילה 😊'); return; }
+  userName = val;
+  localStorage.setItem('userName', val);
+  applyName();
+  showToast('✅ השם נשמר בהצלחה!');
+}
+
+// ========== RESET ==========
+function showResetConfirm() {
+  document.getElementById('reset-confirm').style.display = 'block';
+}
+function hideResetConfirm() {
+  document.getElementById('reset-confirm').style.display = 'none';
+}
+function doReset() {
+  document.querySelectorAll('.meal-item.done').forEach(el => el.classList.remove('done'));
+  updateProgress();
+  hideResetConfirm();
+  showToast('✅ כל הסימונים אופסו בהצלחה!');
+}
+
+// ========== TOAST ==========
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+applyName();
+
+// ========== CHECKLIST ==========
+function toggleItem(el) {
+  el.classList.toggle('done');
+  updateProgress();
+}
+
+function updateProgress() {
+  const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  days.forEach(day => {
+    const panel = document.getElementById('panel-' + day);
+    if (!panel) return;
+    const items = panel.querySelectorAll('.meal-item');
+    const done = panel.querySelectorAll('.meal-item.done');
+    const pct = items.length ? Math.round((done.length / items.length) * 100) : 0;
+    const bar = document.getElementById('prog-bar-' + day);
+    const txt = document.getElementById('prog-txt-' + day);
+    if (bar) bar.style.width = pct + '%';
+    if (txt) txt.textContent = done.length + ' מתוך ' + items.length;
+  });
+}
+updateProgress();
+
+// ========== WEIGHT TRACKER ==========
+let weighings = JSON.parse(localStorage.getItem('weighings') || '[]');
+let targetWeight = parseFloat(localStorage.getItem('targetWeight') || '0') || null;
+
+const dateInput = document.getElementById('weigh-date');
+if (dateInput) {
+  const today = new Date();
+  dateInput.value = today.toISOString().split('T')[0];
+}
+
+function setTarget() {
+  const v = parseFloat(document.getElementById('target-weight').value);
+  if (!v || v < 20 || v > 300) { alert('הכנס משקל יעד תקין'); return; }
+  targetWeight = v;
+  localStorage.setItem('targetWeight', v);
+  renderAll();
+}
+
+function addWeigh() {
+  const d = document.getElementById('weigh-date').value;
+  const v = parseFloat(document.getElementById('weigh-val').value);
+  if (!d) { alert('בחר תאריך'); return; }
+  if (!v || v < 20 || v > 300) { alert('הכנס משקל תקין (ק"ג)'); return; }
+  const existing = weighings.findIndex(w => w.date === d);
+  if (existing >= 0) weighings[existing].weight = v;
+  else weighings.push({ date: d, weight: v });
+  weighings.sort((a,b) => a.date.localeCompare(b.date));
+  localStorage.setItem('weighings', JSON.stringify(weighings));
+  document.getElementById('weigh-val').value = '';
+  renderAll();
+}
+
+function deleteWeigh(idx) {
+  weighings.splice(idx, 1);
+  localStorage.setItem('weighings', JSON.stringify(weighings));
+  renderAll();
+}
+
+const encouragements = [
+  { icon: '🌱', min: 0, max: 0.5, text: 'כל מסע מתחיל בצעד אחד. הצעד הראשון שלך כבר נלקח!' },
+  { icon: '🔥', min: 0.5, max: 2, text: 'כבר {n} ק"ג פחות! הגוף שלך מגיב נהדר — המשך כך!' },
+  { icon: '💪', min: 2, max: 5, text: 'וואו! {n} ק"ג ירדו! אתה במסלול מושלם. כל ק"ג הוא ניצחון!' },
+  { icon: '🏆', min: 5, max: 10, text: '{n} ק"ג! זה כבר הישג ראוי להוקרה. הגוף שלך מאמין בך!' },
+  { icon: '🌟', min: 10, max: 999, text: 'אלוף! {n} ק"ג מאחורייך. אתה מוכיח שעם רצון — הכל אפשרי!' },
+];
+
+let chartInstance = null;
+
+function renderAll() {
+  // Stats
+  const last = weighings.length ? weighings[weighings.length - 1].weight : null;
+  const first = weighings.length ? weighings[0].weight : null;
+  document.getElementById('stat-current').textContent = last ? last.toFixed(1) : '—';
+  document.getElementById('stat-target').textContent = targetWeight ? targetWeight.toFixed(1) : '—';
+  const left = (last && targetWeight) ? Math.max(0, last - targetWeight).toFixed(1) : '—';
+  document.getElementById('stat-left').textContent = left;
+
+  // Encouragement
+  const eCard = document.getElementById('encourage-card');
+  if (first && last && weighings.length >= 1) {
+    const lost = first - last;
+    const enc = encouragements.find(e => lost >= e.min && lost < e.max) || encouragements[0];
+    document.getElementById('e-icon').textContent = enc.icon;
+    document.getElementById('encourage-text').textContent = enc.text.replace('{n}', Math.abs(lost).toFixed(1));
+    eCard.style.display = 'flex';
+  } else {
+    eCard.style.display = 'none';
+  }
+
+  // Target input
+  if (targetWeight) document.getElementById('target-weight').value = targetWeight;
+
+  // Chart
+  renderChart();
+
+  // Table
+  renderTable();
+}
+
+function formatDate(d) {
+  const parts = d.split('-');
+  return parts[2] + '/' + parts[1] + '/' + parts[0];
+}
+
+function renderChart() {
+  const canvas = document.getElementById('weightChart');
+  if (!canvas) return;
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+  const labels = weighings.map(w => formatDate(w.date));
+  const data = weighings.map(w => w.weight);
+
+  if (data.length === 0) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '14px Heebo';
+    ctx.fillStyle = '#aaa';
+    ctx.textAlign = 'center';
+    ctx.fillText('הוסף שקילות לראות את הגרף', canvas.width / 2, 100);
+    return;
+  }
+
+  const datasets = [{
+    label: 'משקל (ק"ג)',
+    data,
+    borderColor: '#2D6A4F',
+    backgroundColor: 'rgba(45,106,79,0.1)',
+    fill: true,
+    tension: 0.35,
+    pointBackgroundColor: '#52B788',
+    pointRadius: 5,
+    pointHoverRadius: 7,
+  }];
+
+  if (targetWeight) {
+    datasets.push({
+      label: 'יעד',
+      data: data.map(() => targetWeight),
+      borderColor: '#F77F00',
+      borderDash: [6, 4],
+      pointRadius: 0,
+      fill: false,
+    });
+  }
+
+  chartInstance = new Chart(canvas, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { font: { family: 'Heebo', size: 12 }, color: '#1B2E1F' } },
+        tooltip: { titleFont: { family: 'Heebo' }, bodyFont: { family: 'Heebo' } }
+      },
+      scales: {
+        y: {
+          ticks: { font: { family: 'Heebo', size: 11 }, color: '#4A6A52' },
+          grid: { color: 'rgba(183,228,199,0.4)' }
+        },
+        x: {
+          ticks: { font: { family: 'Heebo', size: 11 }, color: '#4A6A52' },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function renderTable() {
+  const container = document.getElementById('entries-container');
+  if (!weighings.length) {
+    container.innerHTML = '<div class="no-entries">עדיין אין שקילות מוזנות. הוסף את הראשונה! 🌱</div>';
+    return;
+  }
+  const sorted = [...weighings].reverse();
+  let html = '<table class="entries-table"><thead><tr><th>תאריך</th><th>משקל (ק"ג)</th><th>שינוי</th><th></th></tr></thead><tbody>';
+  sorted.forEach((w, i) => {
+    const origIdx = weighings.length - 1 - i;
+    const prev = origIdx > 0 ? weighings[origIdx - 1].weight : null;
+    let change = '—';
+    let changeColor = '#aaa';
+    if (prev !== null) {
+      const diff = w.weight - prev;
+      change = (diff > 0 ? '+' : '') + diff.toFixed(1) + ' ק"ג';
+      changeColor = diff < 0 ? '#2D6A4F' : diff > 0 ? '#e05252' : '#aaa';
+    }
+    html += `<tr>
+      <td>${formatDate(w.date)}</td>
+      <td style="font-weight:700">${w.weight.toFixed(1)}</td>
+      <td style="color:${changeColor};font-weight:600">${change}</td>
+      <td><button class="btn-del" onclick="deleteWeigh(${origIdx})">🗑️</button></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+// Init
+renderAll();
+</script>
+</body>
+</html>
