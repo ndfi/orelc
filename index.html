@@ -1209,6 +1209,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 // ========== TABS ==========
+const dayNames = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+
 function showTab(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1248,6 +1250,8 @@ function hideResetConfirm() {
 }
 function doReset() {
   document.querySelectorAll('.meal-item.done').forEach(el => el.classList.remove('done'));
+  // Clear all checklist localStorage keys
+  dayNames.forEach(day => localStorage.removeItem('checklist-' + day));
   updateProgress();
   hideResetConfirm();
   showToast('✅ כל הסימונים אופסו בהצלחה!');
@@ -1261,17 +1265,39 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-applyName();
-
-// ========== CHECKLIST ==========
+// ========== CHECKLIST — save & load ==========
 function toggleItem(el) {
   el.classList.toggle('done');
+  saveChecklist();
   updateProgress();
 }
 
+function saveChecklist() {
+  dayNames.forEach(day => {
+    const panel = document.getElementById('panel-' + day);
+    if (!panel) return;
+    const items = panel.querySelectorAll('.meal-item');
+    const states = Array.from(items).map(i => i.classList.contains('done'));
+    localStorage.setItem('checklist-' + day, JSON.stringify(states));
+  });
+}
+
+function loadChecklist() {
+  dayNames.forEach(day => {
+    const saved = localStorage.getItem('checklist-' + day);
+    if (!saved) return;
+    const states = JSON.parse(saved);
+    const panel = document.getElementById('panel-' + day);
+    if (!panel) return;
+    const items = panel.querySelectorAll('.meal-item');
+    items.forEach((item, i) => {
+      if (states[i]) item.classList.add('done');
+    });
+  });
+}
+
 function updateProgress() {
-  const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-  days.forEach(day => {
+  dayNames.forEach(day => {
     const panel = document.getElementById('panel-' + day);
     if (!panel) return;
     const items = panel.querySelectorAll('.meal-item');
@@ -1283,7 +1309,26 @@ function updateProgress() {
     if (txt) txt.textContent = done.length + ' מתוך ' + items.length;
   });
 }
+
+// ========== OPEN TODAY'S TAB ==========
+function openTodayTab() {
+  // JS: 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  // Hebrew week: ראשון=0(Sun), שני=1(Mon)... שבת=6(Sat)
+  const jsDay = new Date().getDay();
+  const todayName = dayNames[jsDay] || dayNames[0];
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(btn => {
+    if (btn.textContent.trim() === todayName) {
+      showTab(todayName, btn);
+    }
+  });
+}
+
+// ========== INIT ==========
+applyName();
+loadChecklist();
 updateProgress();
+openTodayTab();
 
 // ========== WEIGHT TRACKER ==========
 let weighings = JSON.parse(localStorage.getItem('weighings') || '[]');
